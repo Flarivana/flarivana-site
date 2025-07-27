@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <head>
+        <meta charset="UTF-8">
+        <title>Flarivana Candle Co.</title>
+        <link rel="icon" href="static/images/favicon.png" type="image/png">
+        <link rel="stylesheet" href="static/styles/style.css">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Open+Sans&display=swap"
+            rel="stylesheet">
+            <link rel="icon" href="static/images/favicon.png" type="image/png">
+    </head>
+
+
+
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #fffefc;
+            color: #333;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #fdf2e9;
+            text-align: center;
+        }
+
+        header .logo {
+            width: 60px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            font-family: 'Montserrat', sans-serif;
+            padding: 10px 16px;
+            background-color: #e89f71;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #cf885c;
+        }
+
+        .products {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .product {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            width: 250px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .product img {
+            max-width: 100%;
+            border-radius: 6px;
+        }
+
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 20px;
+            max-width: 400px;
+            width: 90%;
+            border-radius: 10px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .cart-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            margin-right: 10px;
+            border-radius: 6px;
+        }
+
+        .cart-item-info {
+            flex-grow: 1;
+        }
+
+        .remove-btn {
+            background: transparent;
+            color: red;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .modal-buttons button {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        @media screen and (max-width: 600px) {
+            .products {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .product {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="static/images/logo.png" alt="Flarivana Logo" class="logo" />
+        <h1>Flarivana Candle Co.</h1>
+        <button onclick="openCart()">🛒 Открыть корзину</button>
+    </header>
+
+    <main class="products">
+        <div class="product">
+            <img src="static/images/product1.jpg" alt="Продукт 1" />
+            <h3>Свеча Ваниль</h3>
+            <p>Цена: 2500 ₸</p>
+            <button onclick="addToCart(1, 'Свеча Ваниль', 2500, 'static/images/product1.jpg')">Добавить в
+                корзину</button>
+        </div>
+        <div class="product">
+            <img src="static/images/product2.jpg" alt="Продукт 2" />
+            <h3>Свеча Лаванда</h3>
+            <p>Цена: 2700 ₸</p>
+            <button onclick="addToCart(2, 'Свеча Лаванда', 2700, 'static/images/product2.jpg')">Добавить в
+                корзину</button>
+        </div>
+    </main>
+
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCart()">&times;</span>
+            <h3>🛒 Ваша корзина</h3>
+            <div id="cartItems"></div>
+            <p id="totalPrice" style="margin-top: 15px;"></p>
+            <input id="orderName" type="text" placeholder="ФИО" />
+            <input id="orderPhone" type="tel" placeholder="Номер телефона" />
+            <input id="orderAddress" type="text" placeholder="Адрес доставки" />
+            <div class="modal-buttons">
+                <button onclick="confirmAndSendToWhatsApp()">Отправить заказ в WhatsApp</button>
+                <button onclick="clearCart()">Очистить</button>
+            </div>
+        </div>
+    </div>
+
+    <section style="text-align:center; padding: 30px 10px; background: #fdf7f2;">
+        <h3>📲 Наши контакты</h3>
+        <p><a href="https://www.instagram.com/flarivana_candle_co" target="_blank">Instagram</a></p>
+        <p><a href="https://t.me/Flarivana_Candle_Co" target="_blank">Telegram-канал: работы</a></p>
+    </section>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+        function saveCart() {
+            localStorage.setItem("cart", JSON.stringify(cart));
+        }
+
+        function addToCart(id, name, price, image) {
+            const existing = cart.find(item => item.id === id);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ id, name, price, image, qty: 1 });
+            }
+            saveCart();
+            alert(`${name} добавлен в корзину.`);
+            renderCart();
+        }
+
+        function openCart() {
+            document.getElementById('cartModal').style.display = 'flex';
+            renderCart();
+        }
+
+        function closeCart() {
+            document.getElementById('cartModal').style.display = 'none';
+        }
+
+        function renderCart() {
+            const cartItems = document.getElementById('cartItems');
+            const totalPrice = document.getElementById('totalPrice');
+            cartItems.innerHTML = '';
+            let total = 0;
+            cart.forEach(item => {
+                const line = document.createElement('div');
+                line.className = "cart-item";
+                line.innerHTML = `
+          <img src="${item.image}" alt="${item.name}" />
+          <div class="cart-item-info">${item.name} × ${item.qty}<br><small>${item.price * item.qty} ₸</small></div>
+          <button class="remove-btn" onclick="removeFromCart(${item.id})">✕</button>
+        `;
+                cartItems.appendChild(line);
+                total += item.price * item.qty;
+            });
+            totalPrice.textContent = `Итого: ${total} ₸`;
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            saveCart();
+            renderCart();
+        }
+
+        function clearCart() {
+            cart = [];
+            saveCart();
+            renderCart();
+        }
+
+        function confirmAndSendToWhatsApp() {
+            closeCart();
+            setTimeout(() => {
+                if (cart.length === 0) return;
+
+                let name = document.getElementById('orderName').value.trim();
+                let phoneNumber = document.getElementById('orderPhone').value.trim();
+                let address = document.getElementById('orderAddress').value.trim();
+
+                if (!name || !phoneNumber || !address) {
+                    alert("Пожалуйста, заполните ФИО, номер телефона и адрес доставки.");
+                    return;
+                }
+
+                if (!/^\+?7\d{10}$/.test(phoneNumber) && !/^8\d{10}$/.test(phoneNumber)) {
+                    alert("Введите корректный номер телефона, например: +77001234567 или 87001234567");
+                    return;
+                }
+
+                let message = `Ваш заказ:\nФИО: ${name}\nТелефон: ${phoneNumber}\nАдрес: ${address}\n\n`;
+                let total = 0;
+                cart.forEach(item => {
+                    message += `• ${item.name} × ${item.qty} – ${item.price * item.qty} ₸\n`;
+                    total += item.price * item.qty;
+                });
+                message += `\nИтого: ${total} ₸`;
+
+                const phone = "77479578717";
+                const link = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+                window.open(link, "_blank");
+            }, 300);
+        }
+
+        // При загрузке страницы сразу отрисовать корзину
+        renderCart();
+    </script>
+</body>
+
+</html>
